@@ -1,5 +1,5 @@
 import chalk from "chalk";
-import { AccountSet, AccountSetAsfFlags, Client, Payment, TrustSet, TrustSetFlags } from "xrpl";
+import { AccountSet, AccountSetAsfFlags, AMMCreate, Client, Payment, TrustSet, TrustSetFlags } from "xrpl";
 
 function convertStringToHexPadded(str: string): string {
     // Convert string to hexadecimal
@@ -21,9 +21,11 @@ export async function amm() {
 
     const { wallet: issuer } = await client.fundWallet();
     console.log(`Issuer: ${chalk.green(issuer.classicAddress)}`);
-    
+
     const { wallet: receiver } = await client.fundWallet();
     console.log(`Receiver: ${chalk.green(receiver.classicAddress)}\n`);
+
+    const tokenCode = convertStringToHexPadded("TEST");
 
     // The receiver enable rippling for the issuer
     console.log(chalk.bgWhite("-- ENABLE RIPPLING --"));
@@ -46,7 +48,7 @@ export async function amm() {
         TransactionType: "TrustSet",
         Account: receiver.address,
         LimitAmount: {
-            currency: convertStringToHexPadded("TEST"),
+            currency: tokenCode,
             issuer: issuer.address,
             value: "500000000",
         },
@@ -66,7 +68,7 @@ export async function amm() {
         Account: issuer.address,
         Destination: receiver.address,
         Amount: {
-            currency: convertStringToHexPadded("TEST"),
+            currency: tokenCode,
             issuer: issuer.address,
             value: "200000000", // 200M tokens
         },
@@ -78,6 +80,26 @@ export async function amm() {
     });
 
     console.log(`✅➡️ Payment sent from ${issuer.address} to ${receiver.address}. Tx: ${resultPaymentTx.result.hash}`);
+
+    // Create the pool
+    console.log(chalk.bgWhite("-- CREATE AMM --"));
+    let createAmm: AMMCreate = {
+        TransactionType: "AMMCreate",
+        Account: receiver.address,
+        TradingFee: 600,
+        Amount: {
+            currency: tokenCode,
+            issuer: issuer.classicAddress,
+            value: "2000000", // 2M tokens
+        },
+        Amount2: "50000000", // 50 XRP in drops
+    };
+
+    const preparedCreacteAmmTx = await client.autofill(createAmm);
+    const resultCreateAmmTx = await client.submitAndWait(preparedCreacteAmmTx, {
+        wallet: receiver,
+    });
+    console.log(`✅🏦 AMM created by the issuer ${issuer.classicAddress}. Tx: ${resultCreateAmmTx.result.hash}`);
 
     await client.disconnect();
 }

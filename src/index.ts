@@ -13,12 +13,12 @@ const rl = readline.createInterface({
 
 function printBanner() {
     console.log();
-    console.log(chalk.bgWhite.black(' Welcome to the Ready‑to‑Go TypeScript Implementation of the XRP Ledger! '));
+    console.log(chalk.bgWhite.black(' Welcome to the Ready‑to‑Go TypeScript Implementation of the XRP Ledger!'));
     console.log();
 }
 
 function printMenu() {
-    console.log('Choose a feature to run:');
+    console.log('\nChoose a feature to run:');
     console.log(`  ${chalk.magenta('1 - NFT')}`);
     console.log(`  ${chalk.red('2 - AMM')}`);
     console.log('  0 - Exit');
