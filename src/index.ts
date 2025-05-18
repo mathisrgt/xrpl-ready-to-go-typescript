@@ -4,6 +4,7 @@ import readline from 'readline';
 import { memo } from './memo';
 import { payment } from './payment';
 import { nft } from './nft';
+import { amm } from './amm';
 
 const rl = readline.createInterface({
     input: process.stdin,
@@ -19,6 +20,7 @@ function printBanner() {
 function printMenu() {
     console.log('Choose a feature to run:');
     console.log(`  ${chalk.magenta('1 - NFT')}`);
+    console.log(`  ${chalk.red('2 - AMM')}`);
     console.log('  0 - Exit');
     console.log();
 }
@@ -27,6 +29,9 @@ async function handleChoice(choice: string) {
     switch (choice.trim()) {
         case '1':
             await nft();
+            break;
+        case '2':
+            await amm();
             break;
         case '0':
             console.log('Bye 👋');

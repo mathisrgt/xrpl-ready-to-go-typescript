@@ -2,10 +2,12 @@ import chalk from "chalk";
 import { Client, convertStringToHex, NFTokenCreateOfferFlags, NFTokenMint, NFTokenMintFlags, Wallet } from "xrpl"
 import { NFTokenMintMetadata } from "xrpl/dist/npm/models/transactions/NFTokenMint";
 
-const client = new Client("wss://s.altnet.rippletest.net:51233");
+
+
 
 export async function nft() {
     console.log(chalk.bgRed('\n-- NFT --'));
+    const client = new Client("wss://s.devnet.rippletest.net:51233/");
     await client.connect();
 
     const { wallet: wallet } = await client.fundWallet();
@@ -70,7 +72,7 @@ export async function nft() {
         console.log(`✅↩️ Offer canceled for NFT #${nftId}. Tx: ${resultCancelOfferTx.result.hash}\n`);
     else
         console.log(chalk.red(`❌ Error canceling offer: ${resultCancelOfferTx}\n`));
-        
+
     // Burn the NFT
     console.log(chalk.bgWhite("-- BURN NFT --"));
     const nftBurnTx = {
@@ -89,6 +91,6 @@ export async function nft() {
         console.log(`✅🔥 NFT #${nftId} burned. Tx: ${resultBurnTx.result.hash}\n`);
     else
         console.log(chalk.red(`❌ Error burning the nft: ${resultBurnTx}\n`));
-        
+
     await client.disconnect();
 };
