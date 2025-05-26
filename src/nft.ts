@@ -2,9 +2,6 @@ import chalk from "chalk";
 import { Client, convertStringToHex, NFTokenCreateOfferFlags, NFTokenMint, NFTokenMintFlags, Wallet } from "xrpl"
 import { NFTokenMintMetadata } from "xrpl/dist/npm/models/transactions/NFTokenMint";
 
-
-
-
 export async function nft() {
     console.log(chalk.bgRed('\n-- NFT --'));
     const client = new Client("wss://s.devnet.rippletest.net:51233/");
@@ -49,7 +46,7 @@ export async function nft() {
     });
     const offerId = (resultCreateOfferTx.result.meta as NFTokenMintMetadata)?.offer_id as string;
 
-    if (resultCreateOfferTx.status !== "tesSUCCESS")
+    if (resultCreateOfferTx.result.validated)
         console.log(`✅🛒 NFT #${nftId} put on sale with offer #${offerId}. Tx: ${resultCreateOfferTx.result.hash}\n`);
     else
         console.log(chalk.red(`❌ Error creating offer: ${resultCreateOfferTx}\n`));
